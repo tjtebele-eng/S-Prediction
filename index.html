@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoalCast | Soccer Predictions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <nav class="topbar">
+        <div class="brand">
+          <div class="brand-mark">GC</div>
+          <div>
+            <p class="eyebrow">Match intelligence</p>
+            <h1>GoalCast</h1>
+          </div>
+        </div>
+        <a class="nav-button" href="#predictions">View Predictions</a>
+      </nav>
+
+      <section class="hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">Soccer prediction dashboard</p>
+          <h2>Cleaner picks, clearer confidence, faster decisions.</h2>
+          <p class="hero-text">
+            Track upcoming fixtures from football-data.org, compare projected outcomes, and explore confidence-based picks across major leagues from one focused interface.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#predictions">Today's Picks</a>
+            <a class="secondary-button" href="#insights">Why It Works</a>
+          </div>
+          <ul class="hero-stats">
+            <li><strong>Live</strong><span>API-backed fixtures</span></li>
+            <li><strong>7</strong><span>Featured leagues</span></li>
+            <li><strong>Fast</strong><span>Server-side fetch</span></li>
+          </ul>
+        </div>
+
+        <aside class="hero-panel">
+          <p class="panel-label">Featured edge</p>
+          <div class="featured-match">
+            <div>
+              <p class="league" id="heroFeaturedLeague">Live spotlight</p>
+              <div class="hero-featured-teams" id="heroFeaturedTeams">
+                <div class="hero-team-mark">
+                  <span class="hero-team-name">Home</span>
+                </div>
+                <span class="hero-versus">vs</span>
+                <div class="hero-team-mark">
+                  <span class="hero-team-name">Away</span>
+                </div>
+              </div>
+              <h3 id="heroFeaturedTitle">Loading featured match...</h3>
+              <p class="match-time" id="heroFeaturedTime">Waiting for live fixtures</p>
+            </div>
+            <div class="score-chip" id="heroFeaturedScore">--</div>
+          </div>
+          <div class="featured-bars">
+            <div>
+              <span id="heroPrimaryLabel">Prediction edge</span>
+              <strong id="heroPrimaryValue">--</strong>
+            </div>
+            <div class="bar"><span id="heroPrimaryBar" style="width: 0%"></span></div>
+            <div>
+              <span id="heroSecondaryLabel">Board confidence</span>
+              <strong id="heroSecondaryValue">--</strong>
+            </div>
+            <div class="bar accent"><span id="heroSecondaryBar" style="width: 0%"></span></div>
+          </div>
+          <p class="panel-note" id="heroPanelNote">
+            Built for quick reads: projected scoreline, confidence, and reasoning snapshots side by side, now fed by live match data.
+          </p>
+        </aside>
+      </section>
+    </header>
+
+    <main>
+      <section class="section" id="insights">
+        <div class="section-heading">
+          <p class="kicker">Prediction signals</p>
+          <h2>What the website helps you see</h2>
+        </div>
+        <div class="insight-grid">
+          <article class="insight-card">
+            <h3>API-backed fixtures</h3>
+            <p>Upcoming matches are loaded from football-data.org so the dashboard can reflect current schedules instead of hardcoded examples.</p>
+          </article>
+          <article class="insight-card">
+            <h3>Goal expectation</h3>
+            <p>Each card shows a projected scoreline and goal-market lean, using API prediction data when available and a local fallback when it is not.</p>
+          </article>
+          <article class="insight-card">
+            <h3>League filters</h3>
+            <p>Switch between more leagues and change the match date to scan different fixture boards without losing the visual rhythm of the dashboard.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="predictions">
+        <div class="section-heading split">
+          <div>
+            <p class="kicker">Live board</p>
+            <h2>Upcoming predictions</h2>
+            <p class="section-subtitle" id="boardStatus">Loading live fixtures from football-data.org...</p>
+          </div>
+          <div class="board-control-stack">
+            <button class="secondary-button drawer-toggle" id="toggleBoardControls" type="button" aria-expanded="false" aria-controls="boardControlsPanel">
+              Board Controls
+            </button>
+            <div class="board-controls" id="boardControlsPanel">
+              <label class="date-control">
+                Match date
+                <input type="date" id="matchDate">
+              </label>
+              <div class="league-picker">
+                <div class="league-picker-header">
+                  <span>Competitions</span>
+                  <div class="league-picker-actions">
+                    <button class="text-button" id="selectAllLeagues" type="button">Select all</button>
+                    <button class="text-button" id="clearAllLeagues" type="button">Clear</button>
+                  </div>
+                </div>
+                <div class="league-options" id="leagueOptions"></div>
+              </div>
+              <button class="primary-button compact" id="refreshMatches" type="button">Refresh Board</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar" id="leagueFilters">
+          <button class="filter-button is-active" data-filter="all" type="button">All</button>
+        </div>
+        <div class="board-subtools">
+          <div class="confidence-legend" aria-label="Confidence legend">
+            <span class="legend-title">Confidence</span>
+            <span class="legend-item high">High 70%+</span>
+            <span class="legend-item medium">Medium 58-69%</span>
+            <span class="legend-item low">Low under 58%</span>
+          </div>
+          <button class="secondary-button compact" id="generateVisibleAi" type="button">Generate AI For Visible</button>
+          <button class="secondary-button compact" id="toggleFavoritesOnly" type="button">Favorites Only: Off</button>
+          <button class="secondary-button compact" id="toggleAdminPanel" type="button">Admin Dashboard</button>
+          <label class="sort-control team-search-control">
+            Search team
+            <input id="teamSearch" type="search" placeholder="Search home or away team">
+          </label>
+          <label class="sort-control">
+            Sort by
+            <select id="sortMatches">
+              <option value="earliest">Earliest kickoff</option>
+              <option value="confidence">Highest confidence</option>
+              <option value="league">League</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="favorites-section" id="favoritesSection" hidden>
+          <div class="favorites-header">
+            <div>
+              <p class="kicker">Favorites</p>
+              <h3>Your teams first</h3>
+            </div>
+            <p class="section-subtitle" id="favoritesStatus">Save favorite teams to pin their fixtures here.</p>
+          </div>
+          <div class="favorites-grid" id="favoritesGrid"></div>
+        </div>
+
+        <div class="prediction-grid" id="predictionGrid"></div>
+        <div class="pagination-wrap" id="paginationWrap">
+          <button class="secondary-button page-button" id="previousPage" type="button">Previous</button>
+          <div class="page-numbers" id="pageNumbers"></div>
+          <button class="secondary-button page-button" id="nextPage" type="button">Next</button>
+        </div>
+
+        <div class="admin-panel" id="adminPanel" hidden>
+          <div class="admin-panel-header">
+            <div>
+              <p class="kicker">Admin dashboard</p>
+              <h3>Prediction overrides</h3>
+            </div>
+            <div class="admin-header-actions">
+              <button class="text-button" id="lockAdminPanel" type="button">Lock</button>
+              <button class="text-button" id="clearAdminOverrides" type="button">Clear overrides</button>
+            </div>
+          </div>
+          <p class="section-subtitle" id="adminStatus">Set a password the first time, then use it to unlock the dashboard on future visits.</p>
+          <form class="admin-auth-form" id="adminAuthForm">
+            <label>
+              Admin password
+              <input id="adminPassword" type="password" placeholder="Enter or create password" required>
+            </label>
+            <div class="admin-actions">
+              <button class="primary-button" type="submit">Unlock dashboard</button>
+            </div>
+          </form>
+          <form class="admin-form" id="adminForm" hidden>
+            <label>
+              Fixture
+              <select id="adminFixtureSelect"></select>
+            </label>
+            <label>
+              Prediction
+              <input id="adminPrediction" type="text" placeholder="e.g. Real Madrid win" required>
+            </label>
+            <label>
+              Projected score
+              <input id="adminScore" type="text" placeholder="e.g. 2 - 1" required>
+            </label>
+            <label>
+              Confidence
+              <input id="adminConfidence" type="number" min="1" max="99" placeholder="e.g. 68" required>
+            </label>
+            <label class="wide">
+              Market note
+              <input id="adminMarket" type="text" placeholder="e.g. Admin override">
+            </label>
+            <label class="wide">
+              Reasoning
+              <textarea id="adminNote" rows="3" placeholder="Why this prediction is being overridden"></textarea>
+            </label>
+            <div class="admin-actions wide">
+              <button class="primary-button" type="submit">Save override</button>
+              <button class="secondary-button" id="clearAdminFixture" type="button">Clear selected override</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="standings-section" id="standingsSection">
+          <div class="favorites-header">
+            <div>
+              <p class="kicker">League tables</p>
+              <h3>Standings snapshot</h3>
+            </div>
+            <p class="section-subtitle" id="standingsStatus">Loading league tables...</p>
+          </div>
+          <div class="standings-grid" id="standingsGrid"></div>
+        </div>
+      </section>
+
+      <section class="section builder-section">
+        <div class="builder-copy">
+          <p class="kicker">Custom scenario</p>
+          <h2>Create a quick prediction angle</h2>
+          <p>
+            Use a simple weighted input to estimate a result lean based on form, attack strength, and defensive stability.
+          </p>
+        </div>
+
+        <form class="builder-card" id="predictorForm">
+          <label>
+            Home team
+            <input type="text" id="homeTeam" placeholder="e.g. Sundowns" required>
+          </label>
+          <label>
+            Away team
+            <input type="text" id="awayTeam" placeholder="e.g. Pirates" required>
+          </label>
+          <label>
+            Home form /10
+            <input type="range" id="homeForm" min="1" max="10" value="7">
+          </label>
+          <label>
+            Away form /10
+            <input type="range" id="awayForm" min="1" max="10" value="6">
+          </label>
+          <label>
+            Home attack /10
+            <input type="range" id="homeAttack" min="1" max="10" value="8">
+          </label>
+          <label>
+            Away defense /10
+            <input type="range" id="awayDefense" min="1" max="10" value="6">
+          </label>
+          <button class="primary-button wide" type="submit">Generate Prediction</button>
+          <div class="custom-result" id="customResult">
+            Fill in the teams and adjust the sliders to generate a prediction.
+          </div>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
